@@ -4,13 +4,22 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PromptRepo {
   static Future<Uint8List?> generateImage(String prompt) async {
     try {
-      String url = 'https://api.vyro.ai/v1/imagine/api/generations';
+      // Get API configuration from environment variables
+      String url = dotenv.env['API_BASE_URL'] ?? 'https://api.vyro.ai/v1/imagine/api/generations';
+      String apiKey = dotenv.env['API_KEY'] ?? '';
+      
+      if (apiKey.isEmpty) {
+        log('Error: API_KEY not found in environment variables');
+        return null;
+      }
+      
       Map<String, dynamic> headers = {
-        'Authorization': 'Bearer vk-YOUR_API_KEY',
+        'Authorization': 'Bearer $apiKey',
       };
 
       Map<String, dynamic> payload = {
@@ -41,6 +50,7 @@ class PromptRepo {
       }
     } catch (e) {
       log(e.toString());
+      return null;
     }
   }
 }
