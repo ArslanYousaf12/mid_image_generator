@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:ffi';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_generator_mid/feature/prompt/repo/prompt_repo.dart';
 import 'package:meta/meta.dart';
 
@@ -34,10 +34,15 @@ class PromptBloc extends Bloc<PromptEvent, PromptState> {
     PromptInitialEvent event,
     Emitter<PromptState> emit,
   ) async {
-    Uint8List bytes =
-        await File(
-          '/Users/akshitmadan/Desktop/midjourney_flutter_app/assets/file.png',
-        ).readAsBytes();
-    emit(PromptGeneratingImageSuccessState(bytes));
+    try {
+      // Load image from assets instead of file system
+      ByteData byteData = await rootBundle.load('assets/file.png');
+      Uint8List bytes = byteData.buffer.asUint8List();
+      emit(PromptGeneratingImageSuccessState(bytes));
+    } catch (e) {
+      // Handle error if asset cannot be loaded
+      print('Error loading initial image: $e');
+      emit(PromptGeneratingImageErrorState());
+    }
   }
 }
