@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:image_generator_mid/feature/prompt/repo/prompt_repo.dart';
 import 'package:meta/meta.dart';
 
 part 'prompt_event.dart';
